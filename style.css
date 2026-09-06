@@ -316,7 +316,7 @@ body.crt-enabled .crt-overlay {
   gap: 12px;
 }
 
-/* ---------------- 左侧叙事视口 ---------------- */
+/* ---------------- 左侧叙事视口与战术雷达 ---------------- */
 .story-viewport {
   background: var(--bg-panel);
   border: 1px solid var(--border-color);
@@ -325,13 +325,153 @@ body.crt-enabled .crt-overlay {
   flex-direction: column;
   overflow: hidden;
   box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+  position: relative;
+}
+
+/* 战术俯视雷达面板 (默认约 260px，可收起) */
+.radar-panel {
+  display: flex;
+  flex-direction: column;
+  background: #050c14;
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+  transition: all 0.2s ease-in-out;
+  position: relative;
+  user-select: none;
+}
+
+.radar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 14px;
+  background: rgba(13, 21, 33, 0.95);
+  border-bottom: 1px solid rgba(0, 240, 255, 0.12);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.radar-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--accent-cyan);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.radar-header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.radar-coords {
+  color: var(--text-dim);
+  font-size: 10px;
+}
+
+.btn-radar-toggle {
+  background: rgba(0, 240, 255, 0.08);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  color: var(--accent-cyan);
+  border-radius: 3px;
+  padding: 2px 8px;
+  font-size: 11px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s;
+}
+
+.btn-radar-toggle:hover {
+  background: rgba(0, 240, 255, 0.2);
+  box-shadow: 0 0 6px rgba(0, 240, 255, 0.3);
+}
+
+.radar-canvas-wrap {
+  position: relative;
+  width: 100%;
+  height: 225px;
+  background: #050c14;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.radar-panel.collapsed .radar-canvas-wrap {
+  display: none;
+}
+
+#radar-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  cursor: crosshair;
+  touch-action: none;
+}
+
+.radar-hud-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 8px 12px;
+}
+
+.radar-hud-guide {
+  align-self: flex-start;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.45);
+  background: rgba(0, 0, 0, 0.4);
+  padding: 2px 6px;
+  border-radius: 2px;
+  border-left: 2px solid var(--accent-cyan);
+}
+
+.radar-prompt-bar {
+  align-self: center;
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 183, 3, 0.25);
+  border: 1px solid var(--accent-amber);
+  color: #ffffff;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 0 12px rgba(255, 183, 3, 0.5);
+  animation: prompt-glow 1.5s infinite alternate ease-in-out;
+}
+
+.radar-prompt-bar:hover {
+  background: rgba(255, 183, 3, 0.45);
+  box-shadow: 0 0 16px rgba(255, 183, 3, 0.7);
+}
+
+@keyframes prompt-glow {
+  0% { transform: translateY(0) scale(1); }
+  100% { transform: translateY(-2px) scale(1.02); }
 }
 
 .story-terminal-card {
   padding: 20px;
   display: flex;
   flex-direction: column;
-  height: 100%;
+  flex: 1;
+  min-height: 0;
   overflow-y: auto;
 }
 
