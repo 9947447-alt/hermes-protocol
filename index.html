@@ -94,6 +94,32 @@
     <main class="terminal-main">
       <!-- 左侧：主要剧情叙事与行动决策区 -->
       <section class="story-viewport" id="story-viewport">
+        <!-- 2D 战术俯视雷达面板 (默认高度约 240px，可收起) -->
+        <div class="radar-panel" id="radar-panel">
+          <div class="radar-header">
+            <div class="radar-title">
+              <span class="radar-icon">🛰️</span>
+              <span class="radar-title-text" id="radar-title-text">战术雷达 // 0F 避难观测舱</span>
+            </div>
+            <div class="radar-header-right">
+              <span class="radar-coords" id="radar-coords">POS: 200, 175</span>
+              <button class="btn-radar-toggle" id="btn-radar-toggle" title="收起/展开雷达">
+                <span id="radar-toggle-icon">▲</span> <span id="radar-toggle-text">收起雷达</span>
+              </button>
+            </div>
+          </div>
+          <div class="radar-canvas-wrap" id="radar-canvas-wrap">
+            <canvas id="radar-canvas" width="400" height="240"></canvas>
+            <div class="radar-hud-overlay">
+              <div class="radar-hud-guide">WASD / 方向键 / 触屏点击走位 | 靠近光圈 [F] 交互</div>
+              <div class="radar-prompt-bar" id="radar-prompt-bar" style="display: none;" title="点击或按 [F] 触发该选项">
+                <span class="prompt-icon">⚡</span>
+                <span class="prompt-text" id="radar-prompt-text">[F] 交互</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="story-terminal-card">
           <div class="story-card-header">
             <div class="timestamp-tag" id="story-timestamp">1994-11-04 02:41:19 UTC</div>
@@ -266,6 +292,7 @@
     </div>
   </div>
 
+  <script src="radar.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

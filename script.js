@@ -901,6 +901,9 @@ const GameState = {
   init() {
     this.fontScale = 1.15;
     document.documentElement.style.setProperty('--font-scale', this.fontScale.toFixed(2));
+    if (typeof Radar !== 'undefined' && Radar.init) {
+      Radar.init();
+    }
     this.renderNode('start');
     this.bindEvents();
     this.updateUI();
@@ -920,8 +923,19 @@ const GameState = {
     this.visitedNodes = ['start'];
     this.historyStack = [];
     this.renderNode('start');
+    if (typeof Radar !== 'undefined' && Radar.reset) {
+      Radar.reset();
+    }
     this.updateUI();
     this.log('循环已重置至起点：0F 避难观测舱。');
+  },
+
+  chooseByIndex(choiceIndex) {
+    const node = STORY_NODES[this.currentNodeId];
+    if (!node || !node.choices || !node.choices[choiceIndex]) return;
+    const choice = node.choices[choiceIndex];
+    audio.playClick();
+    this.renderNode(choice.target);
   },
 
   rewindStep() {
@@ -933,22 +947,23 @@ const GameState = {
     this.companionStates = JSON.parse(JSON.stringify(prev.companionStates));
     this.currentPhaseUnlocked = prev.currentPhaseUnlocked;
     this.currentRuleSubtab = prev.currentRuleSubtab;
-    this.renderNode(prev.nodeId, true);
+    this.renderNode(prev.nodeId, true, prev.radarPose);
     this.log(`因果线已回溯至上一个抉择点：${STORY_NODES[prev.nodeId].title}`);
     audio.playClick();
   },
 
-  renderNode(nodeId, isRewind = false) {
+  renderNode(nodeId, isRewind = false, restoredPose = null) {
     const node = STORY_NODES[nodeId];
     if (!node) {
       console.error('Node not found:', nodeId);
       return;
     }
 
-    // 记录前进历史快照
+    // 记录前进历史快照 (含雷达 pose)
     if (!isRewind && this.currentNodeId && this.currentNodeId !== nodeId) {
       this.historyStack.push({
         nodeId: this.currentNodeId,
+        radarPose: (typeof Radar !== 'undefined' && Radar.getPose) ? Radar.getPose() : null,
         vitals: { ...this.vitals },
         inventory: [ ...this.inventory ],
         activeTools: { ...this.activeTools },
@@ -1002,19 +1017,23 @@ const GameState = {
     // 渲染选项列表
     const choicesListEl = document.getElementById('choices-list');
     choicesListEl.innerHTML = '';
-    node.choices.forEach((c) => {
+    node.choices.forEach((c, idx) => {
       const btn = document.createElement('button');
       btn.className = 'choice-btn';
       btn.innerHTML = `<span>${c.text}</span>`;
       btn.onclick = () => {
-        audio.playClick();
-        this.renderNode(c.target);
+        this.chooseByIndex(idx);
       };
       choicesListEl.appendChild(btn);
     });
 
     // 滚动至顶部
     document.querySelector('.story-terminal-card').scrollTop = 0;
+
+    // 同步战术雷达投影
+    if (typeof Radar !== 'undefined' && Radar.applyNode) {
+      Radar.applyNode(nodeId, restoredPose);
+    }
 
     this.updateUI();
   },
