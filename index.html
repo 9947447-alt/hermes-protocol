@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>北纬82°赫尔墨斯综合体：莫比乌斯绝境协议</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body class="crt-enabled">
+  <!-- CRT 扫描线光栅层 -->
+  <div class="crt-overlay"></div>
+
+  <div id="app" class="terminal-container">
+    <!-- 顶部状态栏与遥测面板 -->
+    <header class="terminal-header">
+      <div class="header-branding">
+        <div class="blinking-status-dot"></div>
+        <div class="branding-text">
+          <span class="station-id">STATION 82 // HERMES DEEP BOREHOLE</span>
+          <span class="sub-status" id="station-substatus">CONTAINMENT BREACH - PROTOCOL ACTIVE</span>
+        </div>
+      </div>
+
+      <!-- 生理遥测数据仪表板 -->
+      <div class="telemetry-bar">
+        <!-- 核心体温 -->
+        <div class="telemetry-item" id="telem-temp-box" title="核心体温：>37.5℃ 触发微波灭菌，<34.0℃ 触发深冷失温">
+          <span class="telem-label">核心体温 (T)</span>
+          <div class="telem-value-group">
+            <span class="telem-value" id="telem-temp">36.8</span>
+            <span class="telem-unit">℃</span>
+          </div>
+          <div class="telem-gauge"><div class="telem-gauge-fill" id="gauge-temp" style="width: 50%;"></div></div>
+        </div>
+
+        <!-- 血氧饱和度 -->
+        <div class="telemetry-item" id="telem-spo2-box" title="血氧饱和度：<80% 触发【元规则 Ⅰ 算子反转律】">
+          <span class="telem-label">血氧饱和度 (SpO₂)</span>
+          <div class="telem-value-group">
+            <span class="telem-value" id="telem-spo2">98</span>
+            <span class="telem-unit">%</span>
+          </div>
+          <div class="telem-gauge"><div class="telem-gauge-fill" id="gauge-spo2" style="width: 98%;"></div></div>
+          <span class="telem-badge" id="badge-inversion">反转未触发</span>
+        </div>
+
+        <!-- 心率脉搏 -->
+        <div class="telemetry-item" id="telem-hr-box" title="心率脉搏：≥150 bpm 激活眼球微动脉震颤与纳米摩尔纹">
+          <span class="telem-label">心率脉搏 (BPM)</span>
+          <div class="telem-value-group">
+            <span class="telem-value" id="telem-hr">76</span>
+            <span class="telem-unit">bpm</span>
+          </div>
+          <div class="telem-gauge"><div class="telem-gauge-fill" id="gauge-hr" style="width: 40%;"></div></div>
+          <span class="telem-badge" id="badge-moire">摩尔纹隐匿</span>
+        </div>
+
+        <!-- 所在物理区域 -->
+        <div class="telemetry-item" id="telem-loc-box">
+          <span class="telem-label">空间层级 / 坐标</span>
+          <span class="telem-value-text" id="telem-location">0F 避难观测舱</span>
+        </div>
+      </div>
+
+      <!-- 右上角快捷控制区 -->
+      <div class="header-actions">
+        <div class="font-scaler-group" title="调节全局字体大小">
+          <button id="btn-font-dec" class="btn-ctrl font-scale-btn" title="缩小字体 (A-)">A-</button>
+          <span id="font-size-label" class="font-size-label">100%</span>
+          <button id="btn-font-inc" class="btn-ctrl font-scale-btn" title="放大字体 (A+)">A+</button>
+        </div>
+        <button id="btn-sound" class="btn-ctrl" title="切换程序音效 (Web Audio 实时合成)">
+          <span class="icon">🔊</span> 音效: <span id="sound-state">关</span>
+        </button>
+        <button id="btn-crt" class="btn-ctrl" title="切换复古 CRT 扫描线与荧光衰减滤镜">
+          <span class="icon">📺</span> CRT: <span id="crt-state">开</span>
+        </button>
+        <button id="btn-rewind" class="btn-ctrl" title="回溯至上一个选择点" disabled>
+          <span class="icon">⏪</span> 回溯
+        </button>
+        <button id="btn-timeline" class="btn-ctrl btn-accent" title="查看已解锁分支节点与结局图鉴">
+          <span class="icon">🗂️</span> 节点图谱 (<span id="unlocked-endings-count">0</span>/9)
+        </button>
+        <button id="btn-restart" class="btn-ctrl btn-danger" title="重置神经连接，返回循环起点">
+          <span class="icon">🔄</span> 重置循环
+        </button>
+      </div>
+    </header>
+
+    <!-- 主交互主格布局 (左右分栏) -->
+    <main class="terminal-main">
+      <!-- 左侧：主要剧情叙事与行动决策区 -->
+      <section class="story-viewport" id="story-viewport">
+        <div class="story-terminal-card">
+          <div class="story-card-header">
+            <div class="timestamp-tag" id="story-timestamp">1994-11-04 02:41:19 UTC</div>
+            <div class="phase-tag" id="story-phase">PHASE I: 0F BREACH</div>
+          </div>
+
+          <h2 class="story-title" id="story-title">正在载入赫尔墨斯综合体机载日志...</h2>
+
+          <!-- 叙述文本内容主体 -->
+          <div class="story-content" id="story-content">
+            <!-- 动态注入剧本文本 -->
+          </div>
+
+          <!-- 警告与环境线索浮层 -->
+          <div class="story-alert" id="story-alert" style="display: none;">
+            <span class="alert-icon">⚠️</span>
+            <span class="alert-text" id="story-alert-text">警报详情</span>
+          </div>
+
+          <!-- 决策选项按钮列表 -->
+          <div class="choices-container">
+            <div class="choices-header-row">
+              <div class="choices-label">// 做出物理行动抉择（请严密参照物理公理与规则反向破译）：</div>
+              <button id="btn-choice-rewind" class="btn-choice-rewind" title="回溯至上一个选择点" disabled>
+                ⏪ 回溯上一步
+              </button>
+            </div>
+            <div class="choices-list" id="choices-list">
+              <!-- 动态注入选项按钮 -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 右侧：全息战术档案、多层规则解密器与物品栏 -->
+      <aside class="tactical-panel">
+        <div class="panel-tabs">
+          <button class="panel-tab-btn active" data-tab="tab-rules">📜 规则矩阵</button>
+          <button class="panel-tab-btn" data-tab="tab-inventory">🎒 随身物品 (<span id="inv-count">0</span>)</button>
+          <button class="panel-tab-btn" data-tab="tab-roster">👥 同伴状态</button>
+        </div>
+
+        <!-- TAB 1: 多层规则矩阵检视与解密器 -->
+        <div class="tab-content active" id="tab-rules">
+          <div class="rule-deck-header">
+            <div class="rule-subtabs" id="rule-subtabs">
+              <button class="rule-subtab-btn active" data-phase="0">元规则</button>
+              <button class="rule-subtab-btn" data-phase="1">0F 表层</button>
+              <button class="rule-subtab-btn" data-phase="2" id="subtab-p2" disabled>-- 夹层 (锁) --</button>
+              <button class="rule-subtab-btn" data-phase="3" id="subtab-p3" disabled>-- 地表 (锁) --</button>
+              <button class="rule-subtab-btn" data-phase="4" id="subtab-p4" disabled>-- 倒悬 (锁) --</button>
+            </div>
+
+            <!-- 解密滤镜工具条 -->
+            <div class="decryption-tools">
+              <span class="tools-title">实证解密滤镜:</span>
+              <button class="tool-btn" id="tool-blood" title="用静脉血液浸润纸张，依靠二价铁离子络合反应显现中层文字">
+                🩸 血液浸润 (<span id="blood-state">关</span>)
+              </button>
+              <button class="tool-btn" id="tool-polaroid" title="透过眼底充血的红细胞观察，过滤荧光素干扰">
+                👁️ 充血偏振 (<span id="polaroid-state">关</span>)
+              </button>
+              <button class="tool-btn" id="tool-moire" title="在心率 ≥150 bpm 时利用视网膜微血管震颤解析纳米光栅" disabled>
+                🌀 摩尔纹干涉 (<span id="moire-state">不可用</span>)
+              </button>
+            </div>
+          </div>
+
+          <!-- 规则展示容器 -->
+          <div class="rule-display-area" id="rule-display-area">
+            <!-- 动态渲染不同阶段的规则条目 -->
+          </div>
+        </div>
+
+        <!-- TAB 2: 随身物品与证物栏 -->
+        <div class="tab-content" id="tab-inventory">
+          <div class="inventory-empty-hint" id="inv-empty-hint">暂未拾取任何物理道具</div>
+          <div class="inventory-grid" id="inventory-grid">
+            <!-- 动态注入道具卡片 -->
+          </div>
+          <div class="item-inspector" id="item-inspector" style="display: none;">
+            <h4 id="item-inspect-name">道具名称</h4>
+            <div class="item-inspect-traits" id="item-inspect-traits">物理特性与使用参数</div>
+            <p id="item-inspect-desc">道具详细解说</p>
+          </div>
+        </div>
+
+        <!-- TAB 3: 同伴生物体征与感染监测 -->
+        <div class="tab-content" id="tab-roster">
+          <div class="roster-list">
+            <!-- 秦澈 -->
+            <div class="roster-card" id="roster-qin">
+              <div class="roster-card-header">
+                <span class="roster-name">秦澈 (机械师)</span>
+                <span class="roster-status status-danger" id="qin-status-tag">高热异常</span>
+              </div>
+              <div class="roster-details">
+                <div>体温：<span class="val-highlight" id="qin-temp">38.2℃</span> (严重偏离常态)</div>
+                <div>泪液冰点：<span class="val-highlight" id="qin-tear">未测定</span></div>
+                <div>身体构装：右臂军规机械外骨骼，内嵌钛合金高压油轴</div>
+                <div class="roster-memo" id="qin-memo">极度隐瞒自身体征，随身携带气动射钉枪与全套维修工具。</div>
+              </div>
+            </div>
+
+            <!-- 苏澜 -->
+            <div class="roster-card" id="roster-su">
+              <div class="roster-card-header">
+                <span class="roster-name">苏澜 (医官)</span>
+                <span class="roster-status status-warning" id="su-status-tag">认知受损</span>
+              </div>
+              <div class="roster-details">
+                <div>体温：<span class="val-normal">36.5℃</span> (完全正常)</div>
+                <div>泪液冰点：<span class="val-highlight" id="su-tear">未测定</span></div>
+                <div>神经病理：视网膜盲斑扩增 35% (Phase 1 逆反期)</div>
+                <div class="roster-memo" id="su-memo">注意：其大脑语言中枢滤除了所有否定词，手记文字全部呈现相反意图！</div>
+              </div>
+            </div>
+
+            <!-- 顾言舟 -->
+            <div class="roster-card" id="roster-gu">
+              <div class="roster-card-header">
+                <span class="roster-name">顾言舟 博士 (前站长)</span>
+                <span class="roster-status status-unknown" id="gu-status-tag">相位干涉中</span>
+              </div>
+              <div class="roster-details">
+                <div>已知相态：<span id="gu-phase-state">相态 1 (1994年广播调度员)</span></div>
+                <div class="roster-memo" id="gu-memo">同一人物在不同时空切片中以多态形式呈现，彼此因果相连。</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <!-- 底部状态日志条 -->
+    <footer class="terminal-footer">
+      <div class="footer-log">
+        <span class="log-prefix">&gt; LOG:</span>
+        <span class="log-content" id="footer-log-text">终端初始化完成，等待观测员陆巡确认初始环境参数...</span>
+      </div>
+      <div class="footer-meta">
+        <span>赫尔墨斯因果拓扑协议 V4.8</span>
+        <span>坐标：82°04′N, 41°12′W</span>
+      </div>
+    </footer>
+  </div>
+
+  <!-- 模态框：时间线图谱与结局图鉴 -->
+  <div class="modal-overlay" id="timeline-modal" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>🗂️ 莫比乌斯时空图谱与结局矩阵</h3>
+        <button class="modal-close" id="btn-close-modal">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="endings-summary">
+          <h4>结局解锁进度 (<span id="modal-endings-count">0</span> / 9)</h4>
+          <div class="endings-grid" id="endings-grid">
+            <!-- 动态生成 6 大结局徽章 -->
+          </div>
+        </div>
+
+        <div class="checkpoints-summary">
+          <h4>已访问的时空锚点（点击可回溯至对应分歧节点）</h4>
+          <div class="checkpoints-list" id="checkpoints-list">
+            <!-- 动态生成已访问节点 -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
